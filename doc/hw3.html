@@ -1,0 +1,713 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Homework 3 - Programming Section &mdash; CSE 571 - HW 3  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to CSE 571 Fall 2019 - HW3!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CSE 571 - HW 3
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Homework 3 - Programming Section</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#plagiarism-warning">Plagiarism Warning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tasks">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grading-policy">Grading Policy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#instructions">Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-reinforcement-folder">Setting up <strong>Reinforcement</strong> Folder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-setting">Environment Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#moving-turtlebot">Moving TurtleBot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#files-and-dictionaries">Files and Dictionaries</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#api">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#class-helper">class Helper</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CSE 571 - HW 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Homework 3 - Programming Section</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="homework-3-programming-section">
+<h1>Homework 3 - Programming Section<a class="headerlink" href="#homework-3-programming-section" title="Permalink to this headline">¶</a></h1>
+<p>Welcome to Programming section of Homework 3 for CSE 571 - Fall 2019.</p>
+<p>This section will test your understanding of Reinforcement Learning as covered in the class.</p>
+<p>Homework is due at 11:59 PM on November 12, 2019. Please plan your submission early to avoid last moment hiccups.</p>
+<div class="section" id="plagiarism-warning">
+<h2>Plagiarism Warning<a class="headerlink" href="#plagiarism-warning" title="Permalink to this headline">¶</a></h2>
+<p>Powerful copy-detection systems will be used as part of grading, so please <strong>DO NOT</strong> submit/use any piece of code that is not <strong>your own</strong> work. These systems can easily catch instances where users change variable names, etc. from copied code.</p>
+<p>If you use any helper code, do not forget to cite it using comments inside the code.</p>
+<p>If you are stuck at any point, you can approach the professor or TA for help.</p>
+<p>As mentioned in class, please remember the academic integrity policy of this course. We have detected plagiarism in last 2 homeworks and appropriate action according to the course policy was taken.</p>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/plagiarism.png"><img alt="Academic Integrity Policy" src="_images/plagiarism.png" style="width: 792.0px; height: 326.5px;" /></a>
+</div>
+</div>
+<div class="section" id="tasks">
+<h2>Tasks<a class="headerlink" href="#tasks" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">[20 points] Compute the Q-values using the 3 sample trajectories provided in trajectories.json files. Export the calculated Q values into a json file.</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">[15 points] Compute a policy to organize books using Q-learning. Use an <img class="math" src="_images/math/65d19c66c148d5016c6a89d26486bf6d1966ded1.png" alt="\epsilon"/>-greedy policy, which selects at each state, the best action according to current Q values with probability <img class="math" src="_images/math/f1ced56f87d60e4e25a94aa3085254ecf4086494.png" alt="1 - \epsilon"/> and selects a random action with probability <img class="math" src="_images/math/65d19c66c148d5016c6a89d26486bf6d1966ded1.png" alt="\epsilon"/>. For episode number <cite>i</cite>, use <img class="math" src="_images/math/65d19c66c148d5016c6a89d26486bf6d1966ded1.png" alt="\epsilon"/> = max(0.05, 0.7 - 0.05 <cite>i</cite>). Start with Q values as zero for all state-action pairs. Plot a graph for number of episodes (x-axis) v/s cumulative reward (y-axis) after performing Q-learning for those episodes. The environment must have books of 2 subjects with 1 book of each size for each subject. Generate this plot for 500 episodes.</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">[15 points] Create a set of pruned action consisting only executable actions for each state, meaning a pick/place should only be performed when the turtlebot is at load location of any of the books/bins. Plot a graph for number of episodes (x-axis) v/s cumulative reward (y-axis) after performing Q-learning for those episodes. The environment must have books of 2 subjects with 1 book of each size for each subject. Generate this plot for as many episodes as possible.</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">[10 points] For which class of models would you prefer to use the approach developed in HW2 over the approach developed in this homework? For which class of models would you prefer the approach developed in this homework over that developed in HW2? For which class of models would you prefer value iteration or policy iteration over both? Describe model classes for this question in terms of deterministic or stochastic actions, full or partial observability, and availability of the <cite>T</cite> and <cite>R</cite> functions.</p>
+</li>
+</ol>
+<p>Please refer to <a class="reference external" href="#instructions">instructions section</a> to understand what these tasks mean and how to setup the environment. It also includes a number of tips that will significantly simplify your task. Follow the instructions strictly to ensure that your assignment can be graded by the auto-grader. <strong>Custom grading requests will not be entertained</strong>.</p>
+<p><strong>Submit graphs for task 2 and task 3, and the answer to task 4 in the pdf that you’ll submit for the Theory Section.</strong></p>
+</div>
+<div class="section" id="grading-policy">
+<h2>Grading Policy<a class="headerlink" href="#grading-policy" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>If the submission is late by 24 hours, you are entitled to 30% to the score you’ll get for the homework.</li>
+<li>No points will be given if the assignment is submitted later than 24 hours.</li>
+<li>In order to get full points for task 1-3, your final submitted code should run without any input or configuration from the TA. If any changes are required to get your submitted code to run, points will be deducted in a manner proportional to the number of changes needed. If you follow the instructions your code will run without any inputs from the TA.</li>
+<li>Homework will be graded on Ubuntu 16.04 machines setup with ROS Kinetic, and Python 2.7. Use the setup from HW0 to ensure your code runs as intended with this configuration.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="instructions">
+<h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="setting-up-reinforcement-folder">
+<h2>Setting up <strong>Reinforcement</strong> Folder<a class="headerlink" href="#setting-up-reinforcement-folder" title="Permalink to this headline">¶</a></h2>
+<p>We assume that you have completed the setup as instructed in Homework 0.
+Refer to <a class="reference external" href="https://aair-lab.github.io/teaching/571_f19_hw/hw0.html">Homework 0 Webpage</a> for details.</p>
+<ol class="arabic">
+<li><p class="first">Clone the “reinforcement” folder from Github to ~/catkin_ws/src/</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> ~/catkin_ws/src <span class="o">&amp;&amp;</span> git clone https://github.com/AAIR-lab/reinforcement.git
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Change permission of all scripts in reinforcement folder to make them executable.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod u+x ~/catkin_ws/src/reinforcement/scripts/*.py
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Execute the env_setup.sh script. It will copy the necessaty files in respective folders. This script will fail if you don’t have turtlebot folder in ~/catkin_ws/src. Refer Homework 0 setup if this is the case.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod u+x ~/catkin_ws/src/reinforcement/env_setup.sh <span class="o">&amp;&amp;</span> ~/catkin_ws/src/reinforcement/env_setup.sh
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="environment-setting">
+<h2>Environment Setting<a class="headerlink" href="#environment-setting" title="Permalink to this headline">¶</a></h2>
+<p>Refer the image below to see how a sample maze environment looks like. The turtleBot has a basket on top of it. There are books of 2 different sizes (large and small) and 2 different subjects lying around on the maze. There are 4 destination bins, 2 of each subject. Each subject has bins of 2 sizes, large and small. Each book has a designated bin, depending on its size and subject.</p>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/books_n_bins.png"><img alt="A sample maze" src="_images/books_n_bins.png" style="width: 737.6px; height: 419.6px;" /></a>
+</div>
+<p>Some of the terms that we use throughout the assignment are:</p>
+<ol class="arabic simple">
+<li>Book and Bin Size: There are two sizes for the books and bins. Large and Small.</li>
+<li>Number of Subjects: This is the number of distinct subjects. This number can vary between 1 and 10 inclusive. For each of the subject, two different bins will be generated; large and small.</li>
+<li>Number of Books: This is the number of books you have of each subject in each size. This number can vary between 1 and 5 inclusive. So actual number of books in the whole environment is number of books * number of subjects * 2.</li>
+<li>Load Location: Every book and bin has 2 load locations. For a book it is the set of locations from where it can be picked by the TurtleBot. For a bin it is the set of locations from where the TurtleBot can place the books into this bin.</li>
+</ol>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>We gave multiple load locations because it is possible that one of the book’s load location is obstructed by another book. Same can also happen for a bin. In such a case the TurtleBot can go to the another load location and perform the pick or place operation.</p>
+<p class="last"><strong>It is possible that both the load locations of a book or bin are obstructed.</strong> In such a case no solution exists, and you have to regenerate the new maze by restarting server.py. Use less number of books initially to avoid this situation.</p>
+</div>
+<ol class="arabic">
+<li><p class="first">Grid Size: Grid Size is not used explicitly in this homework. It is dependent on the number of books. For this homework, Grid Size = 6 * number of subjects.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Similar to the previous homework, the actual grid size used for navigation is different from what is seen in Gazebo environment. Each of the square seen in Gazebo is divided into 4 equal squares.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure" id="id1">
+<img alt="_images/grid.png" src="_images/grid.png" />
+<p class="caption"><span class="caption-text">Fig 1. Grid visible in Gazebo</span></p>
+</div>
+</td>
+<td><div class="first last figure" id="id2">
+<img alt="_images/grid_actual.png" src="_images/grid_actual.png" />
+<p class="caption"><span class="caption-text">Fig 2. Actual navigation grid</span></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="last">Hence, if you have to go from point A to B in Gazebo environment using ‘MoveF’ action, you will have to give ‘MoveF’ command twice. If you give the ‘MoveF’ command once, the TurtleBot will stop at T.</p>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="moving-turtlebot">
+<h2>Moving TurtleBot<a class="headerlink" href="#moving-turtlebot" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">On a terminal, run roscore.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>roscore
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">In a new terminal session, run the server file (located at ~/catkin_ws/src/reinforcement/scripts/server.py). Use the arguments to provide the number of subjects, number of books of each subject, and random seed.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rosrun reinforcement server.py
+</pre></div>
+</div>
+<p>Use – help option to see how to pass arguments to the server.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ rosrun reinforcement server.py -h
+usage: server.py <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-sub <span class="m">2</span><span class="o">]</span> <span class="o">[</span>-b <span class="m">1</span><span class="o">]</span> <span class="o">[</span>-s <span class="m">32</span><span class="o">]</span> <span class="o">[</span>-action_seed <span class="m">32</span><span class="o">]</span> <span class="o">[</span>-headless <span class="m">32</span><span class="o">]</span>
+
+optional arguments:
+  -h, --help       show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  -sub <span class="m">2</span>           <span class="k">for</span> providing no. of subjects
+  -b <span class="m">1</span>             <span class="k">for</span> providing no. of books <span class="k">for</span> each subject of each size
+  -s <span class="m">32</span>            <span class="k">for</span> providing random seed
+  -action_seed <span class="m">32</span>  <span class="k">for</span> providing action selection random seed
+  -headless <span class="m">32</span>     <span class="m">1</span> to run in the headless mode, <span class="m">0</span> to launch gazebo
+</pre></div>
+</div>
+<p>Running server.py will generate a random environment with number of books and number of subjects mentioned in parameters of the server.py.</p>
+</div></blockquote>
+</li>
+<li><p class="first">If you are not running server in headless mode, launch the maze in a new terminal.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>roslaunch reinforcement maze.launch
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">If you are not running server in headless mode, run the move_tbot3.py file in a new terminal. It enables the movement of TurtleBot3.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rosrun reinforcement move_tbot3.py
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Run qlearning.py. Use -h to see what parameters to pass it.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ rosrun reinforcement qlearning.py -h
+usage: qlearning.py <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-task <span class="m">1</span><span class="o">]</span> <span class="o">[</span>-sample <span class="m">1</span><span class="o">]</span> <span class="o">[</span>-episodes <span class="m">1</span><span class="o">]</span>
+
+optional arguments:
+  -h, --help   show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  -task <span class="m">1</span>      Task to execute:
+               <span class="m">1</span>. Q learning on sample trajectories
+               <span class="m">2</span>. Q learning without pruned actions
+               <span class="m">3</span>. Q learning with pruned actions
+  -sample <span class="m">1</span>    which trajectory to evaluate <span class="o">(</span>with task <span class="m">1</span><span class="o">)</span>
+  -episodes <span class="m">1</span>  Number of episodes to run <span class="o">(</span>with task <span class="m">2</span> <span class="p">&amp;</span> <span class="m">3</span><span class="o">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="files-and-dictionaries">
+<h2>Files and Dictionaries<a class="headerlink" href="#files-and-dictionaries" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">trajectories.json</p>
+<blockquote>
+<div><p>The file lists a sequence of states and actions for the given episode in the specified sequence. Each element in the json is a dictionary with the following format:</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<dl class="docutils">
+<dt>{</dt>
+<dd><p class="first last">“state” : “…”, // dictionary representation of the current state serialized into a string
+“action” : “…”, // the action taken in the current state
+“reward” : “…”, // the reward received for execution the given action in the given state</p>
+</dd>
+</dl>
+<p class="last">}</p>
+</div>
+<p>The first element in the trajectory is the initial state. Executing the given action in that state will change the environment into the next state.</p>
+</div></blockquote>
+</li>
+<li><p class="first">action_config.json</p>
+<blockquote>
+<div><p>Lists all actions and their rewards, probabilities etc.</p>
+<p>Format:</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<dl class="docutils">
+<dt>{</dt>
+<dd><dl class="first last docutils">
+<dt>“&lt;action_name&gt;”: {</dt>
+<dd><blockquote class="first">
+<div><p>“function”: “&lt;function to execute inside action_server.py&gt;”,</p>
+<p>“params”: [&lt;list of parameters accepted by corresponding function in action_server.py (must be in same order)&gt;],</p>
+<p>“success_reward”: &lt;reward if action succeeds&gt;,</p>
+<p>“fail_reward”: &lt;reward if action fails&gt;,</p>
+<p>“possibilities”: {</p>
+<blockquote>
+<div><blockquote>
+<div><p>“&lt;action_name&gt;”: &lt;probability of execution&gt;, #&lt;action_name&gt; corresponds to an action in the config</p>
+</div></blockquote>
+<p>“&lt;action_name&gt;”: &lt;probability of execution&gt;,</p>
+<p>.</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p class="last">},
+.
+.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="last">}</p>
+</div>
+<p>You’ll notice that each action has 2 versions, careful and normal. The only difference between careful and normal actions is that careful actions have a higher probability of being successful and have a higher cost. There are a total of 10 actions:</p>
+<ol class="arabic simple">
+<li>careful|normal MoveF: If successful, moves turtlebot3 forward, otherwise turtlebot3 stays still</li>
+<li>careful|normal TurnCW: If successful, rotates turtlebot3 in clockwise direction by 90 degree, otherwise, turtlebot3 rotaes in the opposite direction by 90 degrees.</li>
+<li>careful|normal TurnCCW: If successful, rotates turtlebot3 in counter-clockwise direction by 90 degree, otherwise, turtlebot3 rotaes in the opposite direction by 90 degrees.</li>
+<li>careful|normal pick book_i: If successful, picks the book_i, otherwise no effect.</li>
+<li>careful|normal place book_i bin_k : If successful, places book_i in bin_k</li>
+</ol>
+<p>Once you put a book in a bin, there is no way to take that book out. When all the books are placed in to some bins, the terminal state is reached. Taking actions in terminal states have no effect on the state and no reward is obtained.</p>
+</div></blockquote>
+</li>
+<li><p class="first">Q value dictionary</p>
+<blockquote>
+<div><p>Your Q value dictionary should follow the following format:</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>{</p>
+<blockquote>
+<div><p>“&lt;state representation&gt;” : {</p>
+<blockquote>
+<div><p>“&lt;action1&gt;”: &lt;Q_value&gt;,</p>
+<p>“&lt;action2&gt;”: &lt;Q_value&gt;,
+.
+.
+.</p>
+</div></blockquote>
+<p>},</p>
+<p>“&lt;state representation&gt;” : {</p>
+<blockquote>
+<div><p>“&lt;action1&gt;”: &lt;Q_value&gt;,</p>
+<p>“&lt;action2&gt;”: &lt;Q_value&gt;,
+.
+.
+.</p>
+</div></blockquote>
+<p>},
+.
+.
+.</p>
+</div></blockquote>
+<p class="last">}</p>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Sample Action Config Explanation:</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<dl class="docutils">
+<dt>{</dt>
+<dd><dl class="first docutils">
+<dt>“pick”: {</dt>
+<dd><p class="first">“function”: “execute_pick”,</p>
+<p>“params”: [“book_name”],</p>
+<p>“success_reward”: 25,</p>
+<p>“fail_reward”: -25,</p>
+<p>“possibilities”: {</p>
+<blockquote>
+<div><p>“pick”: 0.85,</p>
+<p>“noaction”: 0.15</p>
+</div></blockquote>
+<p class="last">}</p>
+</dd>
+</dl>
+<p class="last">},</p>
+</dd>
+</dl>
+<p class="last">}</p>
+</div>
+<p>The action name above is defined as <cite>pick</cite>. It corresponds to the <cite>execute_pick</cite> function implemented in <cite>action_server.py</cite>. The function takes 1 variable parameter i.e. <cite>book_name</cite> defined in the <cite>params</cite> key. The reward for successful execution of this action is <cite>25</cite> and reward for a failed execution is <cite>-25</cite>. The given config defines a stochastic environment where executing this action <cite>pick</cite> can result in <cite>pick</cite> being executed with probability <cite>0.85</cite> or a no-op action (defined as <cite>noaction</cite>) with probability <cite>0.15</cite></p>
+<p>To convert this to a deterministic action, we can change the probability of a <cite>pick</cite> action to <cite>1</cite></p>
+</div></blockquote>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="api">
+<h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
+<p>This API covers only the part of code that you will have to use to complete this Homework. You are free to explore the code by looking into each file separately, but do not change anything other than qlearning.py.</p>
+<div class="section" id="class-helper">
+<h2>class Helper<a class="headerlink" href="#class-helper" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="problem.Helper">
+<em class="property">class </em><code class="descclassname">problem.</code><code class="descname">Helper</code><a class="reference internal" href="_modules/problem.html#Helper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.Helper" title="Permalink to this definition">¶</a></dt>
+<dd><p>A state here is represented as a dictionary defining the location of books, if they have been placed, 
+location of turtlebot and which book is present in the basket.</p>
+<dl class="docutils">
+<dt>Example:</dt>
+<dd><dl class="first docutils">
+<dt>{</dt>
+<dd><p class="first">“robot”:  { “x” : 0, “y” : 0, “orientation” : “EAST” },</p>
+<p>“basket”: None,</p>
+<p>“book_1”:  { “x” : 2, “y” : 1.5, “placed” : False },</p>
+<p>“book_2”: ..</p>
+<p>.</p>
+<p>.</p>
+<p class="last">“trolly_1”: { “x” : 3, “y” : 3 },</p>
+</dd>
+</dl>
+<p class="last">}</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="problem.Helper.execute_action">
+<code class="descname">execute_action</code><span class="sig-paren">(</span><em>action</em>, <em>action_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/problem.html#Helper.execute_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.Helper.execute_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function executes the given action in the state being maintained by the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>action</strong> (<em>str</em>) – an str representing the action to perform. This action is a valid defined in the action_config.json</li>
+<li><strong>action_params</strong> (<em>dict</em>) – a dictionary representing the parameters associated with the action as defined in the action_config.json</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Example:</dt>
+<dd><cite>action=’careful_pick’, action_params={‘book_name’:’book_1’}</cite></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if action was successful and returns false otherwise</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Next state  represented as dictionary</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean, dictionary</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body">ServiceException: When call to rospy fails.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>action is a value defined in the action_config.json</p>
+<p>action_params is a dictionary specifying the parameters associated with the action as defined in</p>
+<p class="last">action_config.json</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="problem.Helper.get_all_actions">
+<code class="descname">get_all_actions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/problem.html#Helper.get_all_actions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.Helper.get_all_actions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the actions that turtleBot can perform.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A comma separated list of actions turtlebot can perform</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list of strings</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">ServiceException: When call to rospy fails.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="problem.Helper.get_current_state">
+<code class="descname">get_current_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/problem.html#Helper.get_current_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.Helper.get_current_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function calls get_initial_state service to recive the initial state of the turtlebot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">State Dictionary</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">ServiceException: When call to rospy fails.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="problem.Helper.get_reward">
+<code class="descname">get_reward</code><span class="sig-paren">(</span><em>state</em>, <em>action</em>, <em>next_state</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/problem.html#Helper.get_reward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.Helper.get_reward" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function which reward for executing action in the given state and resulting in the next_state.
+This is equivalent to R(s,a,s’) formulation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>state</strong> (<em>dictonary</em>) – state where the action “action” is taken</li>
+<li><strong>action</strong> (<em>str</em>) – “action” being taken in state</li>
+<li><strong>next_state</strong> (<em>dictionary</em>) – resulting state when action “action” performed in state “state”</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The reward for executing action given s and s’ as usually expressed in R(s,a,s’)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">float</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">ServiceException: When call to rospy fails.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="problem.Helper.is_terminal_state">
+<code class="descname">is_terminal_state</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/problem.html#Helper.is_terminal_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.Helper.is_terminal_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function accepts a dictionary representing the state.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>state</strong> (<em>dictionary</em>) – State represented as a dictionary.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if state is terminal state and returns false if state is not terminal state</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body">ServiceException: When call to rospy fails.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="problem.Helper.reset_world">
+<code class="descname">reset_world</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/problem.html#Helper.reset_world"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.Helper.reset_world" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function resets the running server state to the initial state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body">ServiceException: When call to rospy fails.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This method works only in headless mode. It resets the state of the running server to the initial state. Use this at the start of each episode.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to CSE 571 Fall 2019 - HW3!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, AAIR Lab, ASU
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

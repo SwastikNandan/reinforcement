@@ -2,420 +2,370 @@
 
 import rospy
 from gazebo_msgs.msg import ModelState,ModelStates
-from reinforcement.srv import PlaceActionMsg
-from reinforcement.srv import PickActionMsg
-from reinforcement.srv import CheckEdge
-from reinforcement.srv import IsTerminalState
 from std_msgs.msg import String
-from reinforcement.srv import RemoveBlockedEdgeMsg
-from reinforcement.srv import MoveActionMsg
+from reinforcement.srv import *
 import numpy as np
 import tf
 import math
+import copy
+import json
+from collections import namedtuple
 
 class RobotActionsServer:
-	def __init__(self,object_dict,headless = True, random_seed = 10):
-		# rospy.init_node("action_server")
-		self.object_dict = object_dict
-		self.failure = -1
-		self.success = 1
-		self.empty = True
-		self.status = String(data='Idle')
-		self.world_state = None
-		self.carring = None 
-		self.placed_books = []
-		self.headless =headless
-		self.model_state_publisher = rospy.Publisher("/gazebo/set_model_state",ModelState,queue_size = 10)
-		self.action_publisher = rospy.Publisher("/actions",String,queue_size= 10)
-		self.status_publisher = rospy.Publisher("/status",String,queue_size=10)
-		if not self.headless:
-			self.state_subscriber = rospy.Subscriber("/gazebo/model_states",ModelStates,self.state_callback)
-		self.random_seed = random_seed
-		self.current_state = self.generate_init_state()
-		self.direction_list = ["NORTH","EAST","SOUTH","WEST"]
-		np.random.seed(self.random_seed)
-		rospy.Service("execute_careful_place",PlaceActionMsg,self.execute_careful_place)
-		rospy.Service("execute_careful_pick",PickActionMsg,self.execute_careful_pick)
-		rospy.Service("execute_careful_moveF",MoveActionMsg,self.execute_careful_moveF)
-		rospy.Service("execute_careful_TurnCW",MoveActionMsg,self.execute_careful_TurnCW)
-		rospy.Service("execute_careful_TurnCCW",MoveActionMsg,self.execute_normal_TurnCCW)
-		rospy.Service("execute_normal_place",PlaceActionMsg,self.execute_normal_place)
-		rospy.Service("execute_normal_pick",PickActionMsg,self.execute_normal_pick)
-		rospy.Service("execute_normal_moveF",MoveActionMsg,self.execute_normal_moveF)
-		rospy.Service("execute_normal_TurnCW",MoveActionMsg,self.execute_normal_TurnCW)
-		rospy.Service("execute_normal_TurnCCW",MoveActionMsg,self.execute_normal_TurnCCW)
-		print "Action Server Initiated"
 
-	def generate_init_state(self):
-		state = ""
-		for book in self.object_dict["books"]:
-			state += "({},{},{});".format(book,float(self.object_dict["books"][book]["loc"][0]),float(self.object_dict["books"][book]["loc"][1]))
-		for bin_name in self.object_dict["bins"]:
-			state += "({},{},{});".format(bin_name,float(self.object_dict["bins"][bin_name]["loc"][0]),float(self.object_dict["bins"][bin_name]["loc"][1]))
-		state += "(turtlebot3_burger,{},{},{})".format(0.0,0.0,"EAST")
-		return state
+    def __init__(self, object_dict, root_path, headless=True, random_seed=10):
+        self.object_dict = object_dict
+        self.failure = -1
+        self.success = 1
+        self.status = String(data='Idle')
+        self.headless = headless
+        self.random_seed = random_seed
 
-	def state_callback(self,data):
-		self.world_state = data
-
-	def get_turtlebot_location(self,state):
-		str_part1 = state.split("turtlebot3_burger,")[1]
-		str_part2 = str_part1.split(")")[0]
-		x,y,orientation = str_part2.split(",")
-		return abs(float(x)),abs(float(y)),orientation
-
-	def generate_current_state(self,action=None,book_name=None,bin_name=None):
-		if not self.headless:
-			state = ""
-			for i in range(len(self.world_state.name)):
-				obj =self.world_state.name[i]
-				if obj in self.object_dict["books"] or obj in self.object_dict["bins"] or obj == "turtlebot3_burger":
-					if obj == "turtlebot3_burger":
-						x = self.world_state.pose[i].position.x
-						y = self.world_state.pose[i].position.y
-						orientation = self.world_state.pose[i].orientation
-						quat = (orientation.x,orientation.y,orientation.z,orientation.w)
-						yaw = tf.transformations.euler_from_quaternion(quat)[2]
-						if yaw > (-math.pi /4.0) and yaw < (math.pi / 4.0):
-							direction = "EAST"
-						elif yaw > (math.pi /4.0) and yaw < (3*math.pi / 4.0):
-							direction = "NORTH"
-						elif yaw > (-3.0*math.pi /4.0) and yaw < (-math.pi /4.0):
-							direction = "SOUTH"
-						else:
-							direction = "WEST"
-						state+="(turtlebot3_burger,{},{},{});".format(round(x*2)/2.0,round(2*y)/2.0,direction)
-					else:
-						x = self.world_state.pose[i].position.x
-						y = self.world_state.pose[i].position.y
-						state+="({},{},{});".format(obj,round(x,1),round(y,1))
-			for book in self.placed_books:
-				state+="(placed {});".format(book)
-			if self.carring is not None:
-				state+="(in_basket {});".format(self.carring)
-			self.current_state = state
-			return state
-		else:
-			tbot_current_location = self.get_turtlebot_location(self.current_state)
-			if action == "MoveF":
-				if tbot_current_location[2] == "NORTH":
-					new_tbot_location = [tbot_current_location[0],tbot_current_location[1]+0.5,tbot_current_location[2]]
-				elif tbot_current_location[2] == "SOUTH":
-					new_tbot_location = [tbot_current_location[0],tbot_current_location[1]-0.5,tbot_current_location[2]]
-				elif tbot_current_location[2] == "EAST":
-					new_tbot_location = [tbot_current_location[0]+0.5,tbot_current_location[1],tbot_current_location[2]]
-				else:
-					new_tbot_location = [tbot_current_location[0]-0.5,tbot_current_location[1],tbot_current_location[2]]
-				print "(turtlebot3_burger,{},{},{})".format(tbot_current_location[0],tbot_current_location[1],tbot_current_location[2])
-				new_state = self.current_state.replace("(turtlebot3_burger,{},{},{})".format(tbot_current_location[0],tbot_current_location[1],tbot_current_location[2]),"(turtlebot3_burger,{},{},{})".format(new_tbot_location[0],new_tbot_location[1],new_tbot_location[2]))
-			elif action == "TurnCCW":
-				new_direction = self.direction_list[(self.direction_list.index(tbot_current_location[2]) - 1)%4]
-				new_state = self.current_state.replace(tbot_current_location[2],new_direction)
-			elif action == "TurnCW":
-				new_direction = self.direction_list[(self.direction_list.index(tbot_current_location[2]) + 1)%4]
-				new_state = self.current_state.replace(tbot_current_location[2],new_direction)
-			elif action == "pick":
-				pred_set = set(self.current_state.split(";"))
-				for pred in pred_set:
-					print pred
-					if book_name in pred and "placed" not in pred and "in_basket" not in pred:
-						pred_set.remove(pred)
-						break
-				pred_set.add("(in_basket {})".format(book_name))
-				new_state = ";".join([pred for pred in pred_set])
-			else:
-				pred_set = set(self.current_state.split(";"))
-				for pred in pred_set:
-					if book_name in pred and "in_basket" in pred:
-						pred_set.remove(pred)
-						break
-				pred_set.add("(placed {})".format(book_name))
-				new_state = ";".join([pred for pred in pred_set])
-			self.current_state = new_state
-			return new_state
+        self.model_state_publisher = rospy.Publisher("/gazebo/set_model_state",ModelState,queue_size = 10)
+        self.action_publisher = rospy.Publisher("/actions", String, queue_size=10)
+        self.status_publisher = rospy.Publisher("/status", String, queue_size=10)
+        
+        self.current_state = self.generate_init_state()
+        self.action_config = self.load_action_config(root_path + '/action_config.json')
+        self.direction_list = ["NORTH","EAST","SOUTH","WEST"]
+        np.random.seed(self.random_seed)
+        rospy.Service("execute_action", ActionMsg,self.execute_action)
+        rospy.Service('get_all_actions', GetActions, self.get_all_actions)
+        rospy.Service('get_possible_actions', GetPossibleActions, self.get_possible_actions)
+        rospy.Service('get_possible_states', GetPossibleStates, self.get_possible_states)
+        rospy.Service('get_reward', GetReward, self.get_reward)
+        rospy.Service('is_terminal_state', IsTerminalState, self.is_terminal_state_handler)
+        rospy.Service('get_current_state', GetInitialState, self.get_current_state)
+        print "Action Server Initiated"
 
 
-	def change_gazebo_state(self,book_name,target_transform):
-		model_state_msg = ModelState()
-		model_state_msg.model_name = book_name
-		model_state_msg.pose.position.x = target_transform[0]
-		model_state_msg.pose.position.y = target_transform[1]
-		model_state_msg.pose.position.z = target_transform[2]
-		self.model_state_publisher.publish(model_state_msg)
-
-	def remove_edge(self,book_name):
-		rospy.wait_for_service('remove_blocked_edge')
-		try:
-			remove_edge = rospy.ServiceProxy('remove_blocked_edge',RemoveBlockedEdgeMsg)
-			_ = remove_edge(book_name)
-		except rospy.ServiceException,e:
-			print "Sevice call failed: %s"%e
-
-	def check_edge(self,x1,y1,x2,y2):
-		print "Checking edge {},{},{},{}".format(x1,y1,x2,y2)
-		rospy.wait_for_service('check_is_edge')
-		try:
-			check_is_edge = rospy.ServiceProxy('check_is_edge',CheckEdge)
-			if x1 <= x2 and y1 <= y2:
-				result = check_is_edge(x1,y1,x2,y2)
-			else:
-				result = check_is_edge(x2,y2,x1,y1)
-				print "Edge: ",result.value
-			return result.value == 1
-		except rospy.ServiceException,e:
-			print "Sevice call failed: %s"%e
-
-	def is_terminal_state(self,state):
-		rospy.wait_for_service('is_terminal_state')
-		try:
-			is_term = rospy.ServiceProxy('is_terminal_state',IsTerminalState)
-			response = is_term()
-			return response.value == 1
-		except rospy.ServiceException,e:
-			print "Sevice call failed: %s"%e
-
-	def execute_careful_place(self,req):
-		if not self.is_terminal_state(self.current_state):
-			if np.random.random() < 0.85:
-				book_name = req.book_name
-				bin_name = req.bin_name
-				robot_state = self.get_turtlebot_location(self.current_state)
-				if book_name != self.carring:
-					return self.failure,self.current_state,-25
-				if book_name in self.object_dict["books"] and bin_name in self.object_dict["bins"]:
-					if (robot_state[0],robot_state[1]) in self.object_dict["bins"][bin_name]["load_loc"]:
-						if not self.headless:
-							goal_loc = list(self.object_dict["bins"][bin_name]["loc"])
-							goal_loc[0] = goal_loc[0] + 0.5
-							goal_loc[1] = goal_loc[1] + 0.5
-							self.change_gazebo_state(book_name, goal_loc + [3])
-							rospy.Rate(1).sleep()
-						self.empty = True
-						self.carring = None
-						self.placed_books.append(book_name)
-						self.status_publisher.publish(self.status)
-						if self.object_dict["books"][book_name]["size"] == self.object_dict["bins"][bin_name]["size"] and self.object_dict["books"][book_name]["subject"] == self.object_dict["bins"][bin_name]["subject"]:
-							return self.success,self.generate_current_state("place",book_name,bin_name),500
-						else:
-							return self.success,self.generate_current_state("place",book_name,bin_name),-25
-				self.status_publisher.publish(self.status)
-				return self.failure,self.current_state,-25
-			else:
-				return self.failure,self.current_state,-25
-		else:
-			return self.failure,self.current_state,0
-
-	def execute_careful_pick(self,req):
-		if not self.is_terminal_state(self.current_state):
-			if np.random.random() <  0.85:
-				book_name = req.book_name
-				robot_state = self.get_turtlebot_location(self.current_state)
-				if book_name in self.object_dict["books"] and book_name not in self.placed_books:
-					if (robot_state[0],robot_state[1]) in self.object_dict["books"][book_name]["load_loc"]:
-						if self.empty:
-							if not self.headless:
-								self.change_gazebo_state(book_name,list(robot_state[:2])+[2])
-								rospy.Rate(1).sleep()
-
-							self.empty = False
-							self.carring = book_name
-							_ = self.remove_edge(book_name)
-							self.status_publisher.publish(self.status)
-							return self.success,self.generate_current_state("pick",book_name),-25
-				self.status_publisher.publish(self.status)
-				return self.failure,self.current_state,-25
-			else:
-				return self.failure,self.current_state,-25
-		else:
-			return self.failure,self.current_state,0
+    def generate_init_state(self):
+        state = {}
+        state['robot'] = {'x': 0.0, 'y': 0.0, 'orientation': 'EAST'}
+        for book in self.object_dict["books"]:
+            state[book] = {
+                            'x': float(self.object_dict["books"][book]["loc"][0]), 
+                            'y': float(self.object_dict["books"][book]["loc"][1]), 
+                            'placed': False
+                        }
+        for bin_name in self.object_dict["bins"]:
+            state[bin_name] = {
+                            'x': float(self.object_dict["bins"][bin_name]["loc"][0]),
+                            'y': float(self.object_dict["bins"][bin_name]["loc"][1]),
+                        }
+        state['basket'] = None
+        return state
 
 
-	def execute_normal_place(self,req):
-		if not self.is_terminal_state(self.current_state):
-			if np.random.random() < 0.60:
-				book_name = req.book_name
-				bin_name = req.bin_name
-				robot_state = self.get_turtlebot_location(self.current_state)
-				if book_name != self.carring:
-					return self.failure,self.current_state,-10
-				if book_name in self.object_dict["books"] and bin_name in self.object_dict["bins"]:
-					if (robot_state[0],robot_state[1]) in self.object_dict["bins"][bin_name]["load_loc"]:
-						if not self.headless:
-							goal_loc = list(self.object_dict["bins"][bin_name]["loc"])
-							goal_loc[0] = goal_loc[0] + 0.5
-							goal_loc[1] = goal_loc[1] + 0.5
-							self.change_gazebo_state(book_name, goal_loc + [3])
-							rospy.Rate(1).sleep()
-						self.empty = True
-						self.carring = None
-						self.placed_books.append(book_name)
-						self.status_publisher.publish(self.status)
-						if self.object_dict["books"][book_name]["size"] == self.object_dict["bins"][bin_name]["size"] and self.object_dict["books"][book_name]["subject"] == self.object_dict["bins"][bin_name]["subject"]:
-							return self.success,self.generate_current_state("place",book_name,bin_name),500
-						else:
-							return self.success,self.generate_current_state("place",book_name,bin_name),-10
-				self.status_publisher.publish(self.status)
-				return self.failure,self.current_state,-10
-			else:
-				return self.failure,self.current_state,-10
-		else:
-			return self.failure,self.current_state,0
-
-	def execute_normal_pick(self,req):
-		if not self.is_terminal_state(self.current_state):
-			if np.random.random() <  0.60:
-				book_name = req.book_name
-				robot_state = self.get_turtlebot_location(self.current_state)
-				if book_name in self.object_dict["books"] and book_name not in self.placed_books:
-					if (robot_state[0],robot_state[1]) in self.object_dict["books"][book_name]["load_loc"]:
-						if self.empty:
-							self.change_gazebo_state(book_name,list(robot_state[:2])+[2])
-							self.empty = False
-							self.carring = book_name
-							rospy.Rate(1).sleep()
-							_ = self.remove_edge(book_name)
-							self.status_publisher.publish(self.status)
-							return self.success,self.generate_current_state("pick",book_name),-10
-				self.status_publisher.publish(self.status)
-				return self.failure,self.current_state,-10
-			else:
-				return self.failure,self.current_state,-10
-		else:
-			return self.failure,self.current_state,0
-
-	def execute_careful_moveF(self,req):
-		if not self.is_terminal_state(self.current_state): 
-			if np.random.random() < 0.85:
-				robot_state = self.get_turtlebot_location(self.current_state)
-				x1 = robot_state[0]
-				y1 = robot_state[1]
-				if "EAST" in robot_state[2]:
-					x2 = x1 + 0.5
-					y2 = y1
-				elif "WEST" in robot_state[2]:
-					x2 = x1 - 0.5
-					y2 = y1
-				elif "NORTH" in robot_state[2]:
-					x2 = x1
-					y2 = y1 + 0.5
-				else:
-					x2 = x1
-					y2 = y1 - 0.5
-				if self.check_edge(x1,y1,x2,y2):
-					action_str = "MoveF"
-					if not self.headless:
-						self.action_publisher.publish(String(data=action_str))
-						rospy.wait_for_message("/status",String)
-					return self.success,self.generate_current_state("MoveF"),-10
-				else:
-					return self.failure,self.current_state,-10
-			else:
-				return self.failure,self.current_state,-10
-		else:
-			return self.failure,self.current_state,0
-
-	def execute_careful_TurnCW(self,req):
-		if not self.is_terminal_state(self.current_state):
-			if np.random.random() < 0.85:
-				action_str = "TurnCW"
-				if not self.headless:
-					self.action_publisher.publish(String(data=action_str))
-					rospy.wait_for_message("/status",String)
-				return self.success,self.generate_current_state("TurnCW"),-10
-			else:
-				if not self.headless:
-					action_str = "TurnCCW"
-					self.action_publisher.publish(String(data=action_str))
-					rospy.wait_for_message("/status",String)
-				return self.failure,self.generate_current_state("TurnCCW"),-10
-		else:
-			return self.failure,self.current_state,0
-
-	def execute_careful_TurnCCW(self,req):
-		if not self.is_terminal_state(self.current_state):
-			if np.random.random() < 0.85:
-				if self.headless:
-					action_str = "TurnCCW"
-					self.action_publisher.publish(String(data=action_str))
-					rospy.wait_for_message("/status",String)
-				return self.success,self.generate_current_state("TurnCCW"),-10
-			else:
-				if self.headless:
-					action_str = "TurnCW"
-					self.action_publisher.publish(String(data=action_str))
-					rospy.wait_for_message("/status",String)
-				return self.failure,self.generate_current_state("TurnCW"),-10
-		else:
-			return self.failure,self.current_state,0
+    def get_current_state(self, req):
+        """
+        This function will return initial state of turtlebot3.
+        """
+        return json.dumps(self.current_state)
 
 
-	def execute_normal_moveF(self,req):
-		if not self.is_terminal_state(self.current_state):
-			if np.random.random() < 0.60:
-				robot_state = self.get_turtlebot_location(self.current_state)
-				x1 = robot_state[0]
-				y1 = robot_state[1]
-				print robot_state
-				if "EAST" in robot_state[2]:
-					x2 = x1 + 0.5
-					y2 = y1
-				elif "WEST" in robot_state[2]:
-					x2 = x1 - 0.5
-					y2 = y1
-				elif "NORTH" in robot_state[2]:
-					x2 = x1
-					y2 = y1 + 0.5
-				else:
-					x2 = x1
-					y2 = y1 - 0.5
-				if self.check_edge(x1,y1,x2,y2):
-					if not self.headless:
-						action_str = "MoveF"
-						self.action_publisher.publish(String(data=action_str))
-						rospy.wait_for_message("/status",String)
-					return self.success,self.generate_current_state("MoveF"),-2
-				else:
-					return self.failure,self.current_state,-2
-			else:
-				return self.failure,self.current_state,-2
-		else:
-			return self.failure,self.current_state,0
+    def load_action_config(self, action_config_file):
+        f = open(action_config_file)
+        action_config = json.load(f)
+        f.close()
+        return action_config
 
-	def execute_normal_TurnCW(self,req):
-		if not self.is_terminal_state(self.current_state):
-			if np.random.random() < 0.60:
-				if not self.headless:
-					action_str = "TurnCW"
-					self.action_publisher.publish(String(data=action_str))
-					rospy.wait_for_message("/status",String)
-				return self.success,self.generate_current_state("TurnCW"),-2
-			else:
-				if not self.headless:
-					action_str = "TurnCCW"
-					self.action_publisher.publish(String(data=action_str))
-					rospy.wait_for_message("/status",String)
-				return self.failure,self.generate_current_state("TurnCCW"),-2
-		else:
-			return self.failure,self.generate_current_state(),0
 
-	def execute_normal_TurnCCW(self,req):
-		if not self.is_terminal_state(self.current_state):
-			if np.random.random() < 0.60:
-				if not self.headless:
-					action_str = "TurnCCW"
-					self.action_publisher.publish(String(data=action_str))
-					rospy.wait_for_message("/status",String)
-				return self.success,self.generate_current_state("TurnCCW"),-2
-			else:
-				if not self.headless:
-					action_str = "TurnCW"
-					self.action_publisher.publish(String(data=action_str))
-					rospy.wait_for_message("/status",String)
-				return self.failure,self.generate_current_state("TurnCW"),-2
-		else:
-			return self.failure,self.current_state,0
+    def get_turtlebot_location(self,state):
+        return state['robot']['x'], state['robot']['y'], state['robot']['orientation']
+
+
+    def change_gazebo_state(self, book_name, target_transform):
+        model_state_msg = ModelState()
+        model_state_msg.model_name = book_name
+        model_state_msg.pose.position.x = target_transform[0]
+        model_state_msg.pose.position.y = target_transform[1]
+        model_state_msg.pose.position.z = target_transform[2]
+        self.model_state_publisher.publish(model_state_msg)
+
+
+    def remove_edge(self, book_name):
+        rospy.wait_for_service('remove_blocked_edge')
+        try:
+            remove_edge = rospy.ServiceProxy('remove_blocked_edge',RemoveBlockedEdgeMsg)
+            _ = remove_edge(book_name)
+        except rospy.ServiceException,e:
+            print "Sevice call failed: %s"%e
+
+
+    def check_edge(self, x1, y1, x2, y2):
+        rospy.wait_for_service('check_is_edge')
+        try:
+            check_is_edge = rospy.ServiceProxy('check_is_edge',CheckEdge)
+            if x1 <= x2 and y1 <= y2:
+                result = check_is_edge(x1,y1,x2,y2)
+            else:
+                result = check_is_edge(x2,y2,x1,y1)
+            return result.value == 1
+        except rospy.ServiceException,e:
+            print "Sevice call failed: %s"%e
+
+
+    def is_terminal_state_handler(self, req):
+        state = json.loads(req.state)
+        return self.is_terminal_state(state)
+
+
+    def is_terminal_state(self, state):
+        # Terminal state is reached when all books are placed
+        cnt = 0
+        for key in state.keys():
+            if key.startswith('book'):
+                if state[key]['placed']:
+                    cnt += 1
+
+        if cnt == len(self.object_dict["books"].keys()):
+            return 1
+        else:
+            return 0
+
+
+    def get_all_actions(self, req):
+        actions = ["normal_moveF", "normal_TurnCW", "normal_TurnCCW", "careful_moveF", "careful_TurnCW", "careful_TurnCCW"]
+        for book_name in self.object_dict["books"]:
+            actions.append("normal_pick {}".format(book_name))
+            actions.append("careful_pick {}".format(book_name))
+            for bin_name in self.object_dict["bins"]:
+                actions.append("normal_place {} {}".format(book_name, bin_name))
+                actions.append("careful_place {} {}".format(book_name, bin_name))
+        return ','.join(actions)
+
+
+    def get_possible_actions(self, req):
+        state = req.state
+        
+        # These actions are executable anywhere in the environment
+        action_list = ['pick', 'place', 'TurnCW', 'TurnCCW']
+
+        # Check if we can execute moveF
+        success, next_state = self.execute_moveF(state)
+        if success == 1:
+            action_list.append('moveF')
+        return ','.join(action_list)
+
+
+    def get_possible_states(self, req):
+        state = json.loads(req.state)
+        action = req.action
+        action_params = json.loads(req.action_params)
+
+        next_states = {}
+        i = 1
+        for possible_action in self.action_config[action]['possibilities']:
+            
+            state_key = 'state_{}'.format(i)
+            i += 1
+
+            if possible_action == "noaction":
+                next_states[state_key] = (state, self.action_config[action]['possibilities'][possible_action])
+                continue
+            
+            # generate calling function
+            calling_params = []
+            for param in self.action_config[possible_action]['params']:
+                calling_params.append("'" + action_params[param] + "'")
+            calling_params.append("'" + json.dumps(state) + "'")
+            calling_function = "self.{}({})".format(self.action_config[possible_action]['function'], ','.join(calling_params))
+            success, next_state = eval(calling_function)
+
+            next_states[state_key] = (next_state, self.action_config[action]['possibilities'][possible_action])
+
+        return json.dumps(next_states)
+
+
+    def get_reward(self, req):
+        state = json.loads(req.state)
+        action = req.action
+        next_state = json.loads(req.next_state)
+
+        if state == next_state:
+            return self.action_config[action]['fail_reward']
+        else:
+            return self.action_config[action]['success_reward']
+    
+
+    def execute_action(self, req):
+        action = req.action_name
+        params = json.loads(req.action_params)
+
+        # No operations in terminal state
+        if self.is_terminal_state(self.current_state):
+            return -1, json.dumps(self.current_state)
+
+        # Choose an action based on probabilities in action config
+        chosen_action = np.random.choice(self.action_config[action]['possibilities'].keys(), 
+                                         p=self.action_config[action]['possibilities'].values())
+
+        if chosen_action == "noaction":
+            return self.failure, json.dumps(self.current_state)
+
+        # generate calling function
+        calling_params = []
+        for param in self.action_config[chosen_action]['params']:
+            calling_params.append("'" + params[param] + "'")
+        calling_params.append("'" + json.dumps(self.current_state) + "'")
+        calling_params.append(str(not self.headless))
+        calling_function = "self.{}({})".format(self.action_config[chosen_action]['function'], ','.join(calling_params))
+        print "Executing action: {}".format(chosen_action)
+        success, next_state = eval(calling_function)
+        
+        # Update state
+        self.current_state = copy.deepcopy(next_state)
+        return success, json.dumps(next_state)
+
+
+    def execute_place(self, book_name, bin_name, current_state, simulation=False):
+        current_state = json.loads(current_state)
+        robot_state = self.get_turtlebot_location(current_state)
+        next_state = copy.deepcopy(current_state)
+        
+        # check if book is inside basket
+        if book_name != current_state['basket']:
+            self.status_publisher.publish(self.status)
+            return self.failure, current_state
+
+        # Validate book and bin
+        if book_name in self.object_dict["books"] and bin_name in self.object_dict["bins"]:
+            # Robot is at load location of bin
+            if (robot_state[0],robot_state[1]) in self.object_dict["bins"][bin_name]["load_loc"]:
+                # Book size and subject match bin
+                if self.object_dict["books"][book_name]["size"] == self.object_dict["bins"][bin_name]["size"] and \
+                    self.object_dict["books"][book_name]["subject"] == self.object_dict["bins"][bin_name]["subject"]:
+                    
+                    # Update gazebo environment if needed
+                    if simulation:
+                        goal_loc = list(self.object_dict["bins"][bin_name]["loc"])
+                        goal_loc[0] = goal_loc[0] + 0.5
+                        goal_loc[1] = goal_loc[1] + 0.5
+                        self.change_gazebo_state(book_name, goal_loc + [3])
+                        rospy.Rate(1).sleep()
+                        
+                    self.status_publisher.publish(self.status)
+
+                    # Update state
+                    next_state[book_name]['x'] = -1
+                    next_state[book_name]['y'] = -1
+                    next_state[book_name]['placed'] = True
+                    next_state['basket'] = None
+                    
+                    return self.success, next_state
+        
+        self.status_publisher.publish(self.status)
+        return self.failure, next_state
+
+
+    def execute_pick(self, book_name, current_state, simulation=False):
+        current_state = json.loads(current_state)
+        robot_state = self.get_turtlebot_location(current_state)
+        next_state = copy.deepcopy(current_state)
+
+        # Valid book and book isn't already placed
+        if book_name in self.object_dict["books"] and not current_state[book_name]['placed']:
+            # Robot is at the load location for the book
+            if (robot_state[0],robot_state[1]) in self.object_dict["books"][book_name]["load_loc"]:
+                # Basket is empty
+                if current_state['basket'] is None:
+                    
+                    # Update gazebo environment if needed
+                    if simulation:
+                        self.change_gazebo_state(book_name, list(robot_state[:2])+[2])
+                        rospy.Rate(1).sleep()
+
+                    # Clear the blocked edge in the environment
+                    _ = self.remove_edge(book_name)
+                    self.status_publisher.publish(self.status)
+
+                    # Update state
+                    next_state['basket'] = book_name
+                    next_state[book_name]['x'] = -1
+                    next_state[book_name]['y'] = -1
+
+                    return self.success, next_state
+
+        self.status_publisher.publish(self.status)
+        return self.failure, next_state
+
+
+    def execute_moveF(self, current_state, simulation=False):
+        current_state = json.loads(current_state)
+        robot_state = self.get_turtlebot_location(current_state)
+        next_state = copy.deepcopy(current_state)
+        x1 = robot_state[0]
+        y1 = robot_state[1]
+
+        # Get new location
+        if "EAST" in robot_state[2]:
+            x2 = x1 + 0.5
+            y2 = y1
+        elif "WEST" in robot_state[2]:
+            x2 = x1 - 0.5
+            y2 = y1
+        elif "NORTH" in robot_state[2]:
+            x2 = x1
+            y2 = y1 + 0.5
+        else:
+            x2 = x1
+            y2 = y1 - 0.5
+
+        # Check if that edge isn't blocked
+        if self.check_edge(x1,y1,x2,y2):
+            action_str = "MoveF"
+
+            # Make bot move if simulating in gazebo
+            if simulation:
+                self.action_publisher.publish(String(data=action_str))
+                rospy.wait_for_message("/status",String)
+            
+            # Update State
+            next_state['robot']['x'] = x2
+            next_state['robot']['y'] = y2
+
+            return self.success, next_state
+        else:
+            return self.failure, next_state
+
+
+    def execute_TurnCW(self, current_state, simulation=False):
+        current_state = json.loads(current_state)
+        next_state = copy.deepcopy(current_state)
+
+        # Make bot move if simulating in gazebo
+        if simulation:
+            action_str = "TurnCW"
+            self.action_publisher.publish(String(data=action_str))
+            rospy.wait_for_message("/status",String)
+
+        # Update state
+        current_orientation = current_state['robot']['orientation']
+        new_orientation = self.direction_list[(self.direction_list.index(current_orientation) + 1)%4]
+        next_state['robot']['orientation'] = new_orientation
+
+        return self.success, next_state
+
+
+    def execute_TurnCCW(self, current_state, simulation=False):
+        current_state = json.loads(current_state)
+        next_state = copy.deepcopy(current_state)
+        
+        # Make bot move if simulating in gazebo
+        if simulation:
+            action_str = "TurnCCW"
+            self.action_publisher.publish(String(data=action_str))
+            rospy.wait_for_message("/status",String)
+        
+        # Update state
+        current_orientation = current_state['robot']['orientation']
+        new_orientation = self.direction_list[(self.direction_list.index(current_orientation) - 1)%4]
+        next_state['robot']['orientation'] = new_orientation
+
+        return self.success, next_state
 
 
 if __name__ == "__main__":
-	object_dict = None
-	RobotActionsServer(object_dict)
+    object_dict = None
+    RobotActionsServer(object_dict)

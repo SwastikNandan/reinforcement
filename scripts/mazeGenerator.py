@@ -112,7 +112,7 @@ class Maze:
 		f_out.write("</model>")
 
 	def book_dict_generator(self,books, bookCounter, size, location, coord1, cord2, book_index):
-		print(bookCounter)
+		# print(bookCounter)
 		books["book_"+str(bookCounter)]["size"] = size
 		# Total book count of a subject including small and large
 		books["book_"+str(bookCounter)]["subject"] = self.subject_list[book_index]
@@ -250,11 +250,7 @@ class Maze:
 	 	return object_dict
 
 
-if __name__ == "__main__":
-	#robot height = 0.4m 
-	#trolly height = 1m
-
-	
+if __name__ == "__main__":	
 	subject_count = 6
 	book_sizes = 2
 	book_count_of_each_size = 5
@@ -268,4 +264,4 @@ if __name__ == "__main__":
 	books, mazeInfo = generate_blocked_edges(grid_size, book_count_list, 2,  number_of_trollies, root_path,0.5)
 
 	# pprint.pprint(books)
-	print(mazeInfo)
+	# print(mazeInfo)

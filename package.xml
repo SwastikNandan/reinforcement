@@ -2,12 +2,12 @@
 <package format="2">
   <name>reinforcement</name>
   <version>0.0.0</version>
-  <description>The reinforcment package</description>
+  <description>CSE 571 Homework 3</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <maintainer email="naman@todo.todo">naman</maintainer>
+  <maintainer email="aair.lab@asu.edu">AAIR</maintainer>
 
 
   <!-- One license tag required, multiple allowed, one license per tag -->

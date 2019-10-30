@@ -60,18 +60,16 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate services in the 'srv' folder
  add_service_files(
    FILES
-   GetSuccessor.srv
    GetInitialState.srv
-   IsGoalState.srv
-   GetGoalState.srv
-   PlaceActionMsg.srv
-   PickActionMsg.srv
    RemoveBlockedEdgeMsg.srv
-   MoveActionMsg.srv
    GetActions.srv
    IsTerminalState.srv
    CheckEdge.srv
    ResetWorldMsg.srv
+   ActionMsg.srv
+   GetPossibleActions.srv
+   GetPossibleStates.srv
+   GetReward.srv
  )
 
 ## Generate actions in the 'action' folder

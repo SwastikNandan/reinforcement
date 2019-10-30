@@ -1,150 +1,193 @@
 #!/usr/bin/env python
+# encoding: utf-8
+
+__copyright__ = "Copyright 2019, AAIR Lab, ASU"
+__authors__ = ["Abhyudaya Srinet", "Pulkit Verma"]
+__credits__ = ["Siddharth Srivastava"]
+__license__ = "MIT"
+__version__ = "1.0"
+__maintainers__ = ["Pulkit Verma", "Abhyudaya Srinet"]
+__contact__ = "aair.lab@asu.edu"
+__docformat__ = 'reStructuredText'
+
 import sys
 import rospy
 from reinforcement.srv import *
 from std_msgs.msg import String
+import json
 
 
-def get_current_state():
+class Helper:
     """
-    This function calls get_initial_state service to recive the initial state of the turtlebot.
+    A state here is represented as a dictionary defining the location of books, if they have been placed, 
+    location of turtlebot and which book is present in the basket.
 
-    return:  x_cord - initial x-cordinate of turtlebot           
-             y_cord - initial y-cordinate of turtlebot
-             direction - initial orientation
-    """
-    rospy.wait_for_service('get_current_state')
-    try:
-        get_initial_state = rospy.ServiceProxy('get_current_state', GetInitialState)
-        response = get_initial_state()
-        return response.state
-    except rospy.ServiceException, e:
-        print "Service call failed: %s"%e
+    Example:
+        \{
+            "robot":  { "x" : 0, "y" : 0, "orientation" : "EAST" },
 
-def is_terminal_state():
-    rospy.wait_for_service('is_terminal_state')
-    try:
-        is_term_state = rospy.ServiceProxy('is_terminal_state', IsTerminalState)
-        response = is_term_state()
-        return response.value
-    except rospy.ServiceException, e:
-        print "Service call failed: %s"%e
+            "basket": None,
+            
+            "book_1":  { "x" : 2, "y" : 1.5, "placed" : False },
+            
+            "book_2": ..
+            
+            .
+            
+            .
+            
+            "trolly_1": { "x" : 3, "y" : 3 },
 
-def reset_world():
-    rospy.wait_for_service('reset_world')
-    try:
-        handle = rospy.ServiceProxy('reset_world',ResetWorldMsg)
-        response = handle()
-    except rospy.ServiceException, e:
-        print "Service call failedL %s"%e
+        \}
 
-def get_all_actions():
-    """
-    This function calls is_goal_state service to check if the current state is the goal state or not.
+    """        
 
-    parameters:  x_cord - current x-cordinate of turtlebot           return:   1 : if current state is the goal state
-                 y_cord - current y-cordinate of turtlebot                     0 : if current state is not the goal state
-    """
-    rospy.wait_for_service('get_all_actions')
-    try:
-        all_actions = rospy.ServiceProxy('get_all_actions', GetActions)
-        response = all_actions()
-        return response.actions.split(";")
-    except rospy.ServiceException, e:
-        print "Service call failed: %s"%e
+    def get_current_state (self):
+        """
+        This function calls get_initial_state service to recive the initial state of the turtlebot.
+        
+        :returns: State Dictionary
+        :rtype: dict
 
-def execute_careful_pick(book_name):
-    rospy.wait_for_service('execute_careful_pick')
-    try:
-        pick_action = rospy.ServiceProxy('execute_careful_pick',PickActionMsg)
-        response = pick_action(book_name)
-        return response.result,response.next_state,response.reward
-    except rospy.ServiceException,e:
-        print "Sevice call failed: %s"%e
+        :raises: ServiceException: When call to rospy fails.
 
-def execute_careful_place(book_name,bin_name):
-    rospy.wait_for_service('execute_careful_place')
-    try:
-        place_action = rospy.ServiceProxy('execute_careful_place',PlaceActionMsg)
-        response = place_action(book_name,bin_name)
-        return response.result,response.next_state,response.reward
-    except rospy.ServiceException,e:
-        print "Sevice call failed: %s"%e
-
-def execute_careful_moveF():
-    rospy.wait_for_service('execute_careful_moveF')
-    try:
-        careful_moveF = rospy.ServiceProxy("execute_careful_moveF",MoveActionMsg)
-        response = careful_moveF()
-        return response.success,response.next_state,response.reward
-    except rospy.ServiceException,e:
-        print "Sevice call failed: %s"%e
-
-def execute_careful_TurnCW():
-    rospy.wait_for_service('execute_careful_TurnCW')
-    try:
-        careful_TurnCW = rospy.ServiceProxy("execute_careful_TurnCW",MoveActionMsg)
-        response = careful_TurnCW()
-        return response.success,response.next_state,response.reward
-    except rospy.ServiceException,e:
-        print "Sevice call failed: %s"%e
-
-def execute_careful_TurnCCW():
-    rospy.wait_for_service('execute_careful_TurnCCW')
-    try:
-        careful_TurnCCW = rospy.ServiceProxy("execute_careful_TurnCCW",MoveActionMsg)
-        response = careful_TurnCCW()
-        return response.success,response.next_state,response.reward
-    except rospy.ServiceException,e:
-        print "Sevice call failed: %s"%e
+        """
+        rospy.wait_for_service('get_current_state')
+        try:
+            get_initial_state = rospy.ServiceProxy('get_current_state', GetInitialState)
+            response = get_initial_state()
+            return json.loads(response.state)
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
 
 
+    def is_terminal_state(self, state):
+        """
+        This function accepts a dictionary representing the state.
 
-def execute_normal_pick(book_name):
-    rospy.wait_for_service('execute_normal_pick')
-    try:
-        pick_action = rospy.ServiceProxy('execute_normal_pick',PickActionMsg)
-        response = pick_action(book_name)
-        return response.result,response.next_state,response.reward
-    except rospy.ServiceException,e:
-        print "Sevice call failed: %s"%e
+        :param state: State represented as a dictionary.
+        :type state: dictionary
 
-def execute_normal_place(book_name,bin_name):
-    rospy.wait_for_service('execute_normal_place')
-    try:
-        place_action = rospy.ServiceProxy('execute_normal_place',PlaceActionMsg)
-        response = place_action(book_name,bin_name)
-        return response.result,response.next_state,response.reward
-    except rospy.ServiceException,e:
-        print "Sevice call failed: %s"%e
+        :returns: True if state is terminal state and returns false if state is not terminal state
+        :rtype: Boolean
 
-def execute_normal_moveF():
-    rospy.wait_for_service('execute_normal_moveF')
-    try:
-        normal_moveF = rospy.ServiceProxy("execute_normal_moveF",MoveActionMsg)
-        response = normal_moveF()
-        return response.success,response.next_state,response.reward
-    except rospy.ServiceException,e:
-        print "Sevice call failed: %s"%e
+        :raises: ServiceException: When call to rospy fails.
 
-def execute_normal_TurnCW():
-    rospy.wait_for_service('execute_normal_TurnCW')
-    try:
-        normal_TurnCW = rospy.ServiceProxy("execute_normal_TurnCW",MoveActionMsg)
-        response = normal_TurnCW()
-        return response.success,response.next_state,response.reward
-    except rospy.ServiceException,e:
-        print "Sevice call failed: %s"%e
+        """
 
-def execute_normal_TurnCCW():
-    rospy.wait_for_service('execute_normal_TurnCCW')
-    try:
-        normal_TurnCCW = rospy.ServiceProxy("execute_normal_TurnCCW",MoveActionMsg)
-        response = normal_TurnCCW()
-        return response.success,response.next_state,response.reward
-    except rospy.ServiceException,e:
-        print "Sevice call failed: %s"%e
+        rospy.wait_for_service('is_terminal_state')
+        try:
+            is_term_state = rospy.ServiceProxy('is_terminal_state', IsTerminalState)
+            response = is_term_state(json.dumps(state))
+            return response.value == 1
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
 
 
-def usage():
-    return "%s [x y]"%sys.argv[0]
+    def reset_world (self):
+        """
+        This function resets the running server state to the initial state
+
+        :rtype: None
+
+        :raises: ServiceException: When call to rospy fails.
+        
+        .. warning::
+            This method works only in headless mode. It resets the state of the running server to the initial state. Use this at the start of each episode.
+
+        """
+        rospy.wait_for_service('reset_world')
+        try:
+            handle = rospy.ServiceProxy('reset_world', ResetWorldMsg)
+            response = handle()
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
+
+
+    def get_all_actions(self):
+        """
+        Returns all the actions that turtleBot can perform.
+        
+        :returns: A comma separated list of actions turtlebot can perform
+        :rtype: list of strings
+
+        :raises: ServiceException: When call to rospy fails.
+        
+        """
+        rospy.wait_for_service('get_all_actions')
+        try:
+            all_actions = rospy.ServiceProxy('get_all_actions', GetActions)
+            response = all_actions()
+            return response.actions.split(",")
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
+
+
+    def get_reward(self, state, action, next_state):
+        """
+        
+        This function which reward for executing action in the given state and resulting in the next_state.
+        This is equivalent to R(s,a,s') formulation.
+
+        :param state: state where the action "action" is taken
+        :type state: dictonary
+        :param action: "action" being taken in state 
+        :type action: str
+        :param next_state: resulting state when action "action" performed in state "state"
+        :type next_state: dictionary
+
+        :returns: The reward for executing action given s and s' as usually expressed in R(s,a,s')
+        :rtype: float
+
+        :raises: ServiceException: When call to rospy fails.
+
+        """
+        rospy.wait_for_service('get_reward')
+        try:
+            get_reward = rospy.ServiceProxy('get_reward', GetReward)
+            state = json.dumps(state)
+            next_state = json.dumps(next_state)
+            response = get_reward(state, action, next_state)
+            return response.reward
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
+
+
+    def execute_action(self, action, action_params):
+        """
+        This function executes the given action in the state being maintained by the server.
+
+        :param action: an str representing the action to perform. This action is a valid defined in the action_config.json
+        :type action: str
+        :param action_params: a dictionary representing the parameters associated with the action as defined in the action_config.json
+        :type action_params: dict
+
+        Example:
+            `action='careful_pick', action_params={'book_name':'book_1'}`
+
+        :returns: True if action was successful and returns false otherwise
+        :returns: Next state  represented as dictionary
+        :rtype: Boolean, dictionary
+
+        :raises: ServiceException: When call to rospy fails.
+
+        .. note::
+            action is a value defined in the action_config.json
+            
+            action_params is a dictionary specifying the parameters associated with the action as defined in
+            
+            action_config.json
+
+        """
+        rospy.wait_for_service('execute_action')
+        try:
+            execute_action = rospy.ServiceProxy('execute_action', ActionMsg)
+            action_params = json.dumps(action_params)
+            response = execute_action(action, action_params)
+            return_val = True
+            if response.success == -1:
+                return_val = False
+            return return_val, json.loads(response.next_state)
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
+
