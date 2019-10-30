@@ -98,12 +98,10 @@ Some of the terms that we use throughout the assignment are:
 
 #. Number of Books: This is the number of books you have of each subject in each size. This number can vary between 1 and 5 inclusive. So actual number of books in the whole environment is number of books * number of subjects * 2.
 
-#. Load Location: Every book and bin has 2 load locations. For a book it is the set of locations from where it can be picked by the TurtleBot. For a bin it is the set of locations from where the TurtleBot can place the books into this bin.
+#. Load Location: Every book and bin has multiple load locations. For a book it is the set of locations from where it can be picked by the TurtleBot. For a bin it is the set of locations from where the TurtleBot can place the books into this bin.
 
 .. warning::
 	We gave multiple load locations because it is possible that one of the book's load location is obstructed by another book. Same can also happen for a bin. In such a case the TurtleBot can go to the another load location and perform the pick or place operation. 
-
-	**It is possible that both the load locations of a book or bin are obstructed.** In such a case no solution exists, and you have to regenerate the new maze by restarting server.py. Use less number of books initially to avoid this situation.
 
 #. Grid Size: Grid Size is not used explicitly in this homework. It is dependent on the number of books. For this homework, Grid Size = 6 * number of subjects.
 
@@ -145,7 +143,7 @@ Moving TurtleBot
 	.. code-block:: bash
 
 		$ rosrun reinforcement server.py -h
-		usage: server.py [-h] [-sub 2] [-b 1] [-s 32] [-action_seed 32] [-headless 32]
+		usage: server.py [-h] [-sub 2] [-b 1] [-s 32] [-action_seed 32] [-headless 1]
 
 		optional arguments:
 		  -h, --help       show this help message and exit
@@ -153,7 +151,7 @@ Moving TurtleBot
 		  -b 1             for providing no. of books for each subject of each size
 		  -s 32            for providing random seed
 		  -action_seed 32  for providing action selection random seed
-		  -headless 32     1 to run in the headless mode, 0 to launch gazebo
+		  -headless 1      1 to run in the headless mode, 0 to launch gazebo
 
 
 	Running server.py will generate a random environment with number of books and number of subjects mentioned in parameters of the server.py.
