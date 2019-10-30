@@ -1,11 +1,11 @@
 # copy model files
-cp -r ./helpers/models/* ~/.gazebo/models
+cp -r ~/catkin_ws/src/reinforcement/helpers/models/* ~/.gazebo/models
 
 # copy basket mesh files
-cp -r ./helpers/turtlebot/basket ~/catkin_ws/src/turtlebot3/turtlebot3_description/meshes/
+cp -r ~/catkin_ws/src/reinforcement/helpers/turtlebot/basket ~/catkin_ws/src/turtlebot3/turtlebot3_description/meshes/
 
 # copy xacro file
-cp -r ./helpers/turtlebot/turtlebot3_waffle.urdf.xacro ~/catkin_ws/src/turtlebot3/turtlebot3_description/urdf/
+cp -r ~/catkin_ws/src/reinforcement/helpers/turtlebot/turtlebot3_waffle.urdf.xacro ~/catkin_ws/src/turtlebot3/turtlebot3_description/urdf/
 
 # catkin make
 cd ~/catkin_ws && catkin_make
