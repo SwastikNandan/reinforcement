@@ -308,7 +308,7 @@ Refer to <a class="reference external" href="https://aair-lab.github.io/teaching
 </div>
 <p>Use – help option to see how to pass arguments to the server.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ rosrun reinforcement server.py -h
-usage: server.py <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-sub <span class="m">2</span><span class="o">]</span> <span class="o">[</span>-b <span class="m">1</span><span class="o">]</span> <span class="o">[</span>-s <span class="m">32</span><span class="o">]</span> <span class="o">[</span>-action_seed <span class="m">32</span><span class="o">]</span> <span class="o">[</span>-headless <span class="m">32</span><span class="o">]</span>
+usage: server.py <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-sub <span class="m">2</span><span class="o">]</span> <span class="o">[</span>-b <span class="m">1</span><span class="o">]</span> <span class="o">[</span>-s <span class="m">32</span><span class="o">]</span> <span class="o">[</span>-action_seed <span class="m">32</span><span class="o">]</span> <span class="o">[</span>-headless <span class="m">1</span><span class="o">]</span>
 
 optional arguments:
   -h, --help       show this <span class="nb">help</span> message and <span class="nb">exit</span>
@@ -316,7 +316,7 @@ optional arguments:
   -b <span class="m">1</span>             <span class="k">for</span> providing no. of books <span class="k">for</span> each subject of each size
   -s <span class="m">32</span>            <span class="k">for</span> providing random seed
   -action_seed <span class="m">32</span>  <span class="k">for</span> providing action selection random seed
-  -headless <span class="m">32</span>     <span class="m">1</span> to run in the headless mode, <span class="m">0</span> to launch gazebo
+  -headless <span class="m">1</span>      <span class="m">1</span> to run in the headless mode, <span class="m">0</span> to launch gazebo
 </pre></div>
 </div>
 <p>Running server.py will generate a random environment with number of books and number of subjects mentioned in parameters of the server.py.</p>

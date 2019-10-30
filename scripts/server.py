@@ -20,7 +20,7 @@ parser.add_argument('-sub', help='for providing no. of subjects', metavar='2', a
 parser.add_argument('-b', help='for providing no. of books for each subject of each size', metavar='1', action='store', dest='n_books', default=2, type=int)
 parser.add_argument('-s', help='for providing random seed', metavar='32', action='store', dest='seed', default=int(time.time()), type=int)
 parser.add_argument('-action_seed', help='for providing action selection random seed', metavar='32', action='store', dest='action_seed', default=int(time.time()), type=int)
-parser.add_argument('-headless', help='1 to run in the headless mode, 0 to launch gazebo', metavar='32', action='store', dest='headless', default=1, type=int)
+parser.add_argument('-headless', help='1 to run in the headless mode, 0 to launch gazebo', metavar='1', action='store', dest='headless', default=1, type=int)
 robot_action_server = None
 
 
