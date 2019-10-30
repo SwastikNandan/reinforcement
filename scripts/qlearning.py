@@ -21,11 +21,12 @@ parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument('-task', help="Task to execute:\n1. Q learning on sample trajectories\n2. Q learning without pruned actions\n3. Q learning with pruned actions", metavar='1', action='store', dest='task', default="1", type=int)
 parser.add_argument("-sample", metavar="1", dest='sample', default='1', help="which trajectory to evaluate (with task 1)", type=int)
 parser.add_argument('-episodes', help="Number of episodes to run (with task 2 & 3)", metavar='1', action='store', dest='episodes', default="1", type=int)
+parser.add_argument('-headless', help='1 when running in the headless mode, 0 when running with gazebo', metavar='1', action='store', dest='headless', default=1, type=int)
 
 
 class QLearning:
 
-    def __init__(self, task, sample=1, episodes=1):
+    def __init__(self, task, headless=1, sample=1, episodes=1):
         rospy.init_node('qlearning', anonymous=True)
         root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
         
@@ -33,6 +34,7 @@ class QLearning:
         self.books = json.load(open(self.books_json_file))
         self.helper = problem.Helper()
         self.helper.reset_world()
+	self.headless = headless
 
         if(task == 1):
             trajectories_json_file = root_path + "/trajectories{}.json".format(sample)
@@ -75,6 +77,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.task == 1:
-        QLearning(args.task, sample=args.sample)
+        QLearning(args.task, headless=args.headless, sample=args.sample)
     elif args.task == 2 or args.task == 3:
-        QLearning(args.task, episodes=args.episodes)
+        QLearning(args.task, headless=args.headless, episodes=args.episodes)
