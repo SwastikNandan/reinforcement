@@ -286,6 +286,15 @@ Files and Dictionaries
 
 		}
 
+		Here state representation for a state can be generates using state dictionary in the following manner:
+
+		.. code-block:: python
+
+			current_state = self.helper.get_current_state()
+			state_representation = json.dumps(current_state)
+
+    Here you can see state representation for current_state. This can even be used as a key in dictionary.
+
 #. Sample Action Config Explanation:
 
 	.. note::

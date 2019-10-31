@@ -421,6 +421,7 @@ optional arguments:
 </li>
 <li><p class="first">Q value dictionary</p>
 <blockquote>
+<div><blockquote>
 <div><p>Your Q value dictionary should follow the following format:</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -448,8 +449,15 @@ optional arguments:
 .
 .</p>
 </div></blockquote>
-<p class="last">}</p>
+<p>}</p>
+<p>Here state representation for a state can be generates using state dictionary in the following manner:</p>
+<div class="last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">current_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">get_current_state</span><span class="p">()</span>
+<span class="n">state_representation</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">current_state</span><span class="p">)</span>
+</pre></div>
 </div>
+</div>
+</div></blockquote>
+<p>Here you can see state representation for current_state. This can even be used as a key in dictionary.</p>
 </div></blockquote>
 </li>
 <li><p class="first">Sample Action Config Explanation:</p>
