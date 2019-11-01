@@ -34,7 +34,9 @@ class QLearning:
         self.books = json.load(open(self.books_json_file))
         self.helper = problem.Helper()
         self.helper.reset_world()
-	self.headless = headless
+        self.headless = headless
+        self.alpha = 0.3
+        self.gamma = 0.9
 
         if(task == 1):
             trajectories_json_file = root_path + "/trajectories{}.json".format(sample)
