@@ -202,6 +202,8 @@ Files and Dictionaries
 
 	The first element in the trajectory is the initial state. Executing the given action in that state will change the environment into the next state.
 
+	You'll notice that the penultimate action is giving you the reward of completing the task (500). The final action is given so that you can use the state to calculate reward using R(s,a,s') formulation. Ignore the reward of the final action.
+
 #. action_config.json
 
 	Lists all actions and their rewards, probabilities etc. 
@@ -240,11 +242,11 @@ Files and Dictionaries
 
 	You'll notice that each action has 2 versions, careful and normal. The only difference between careful and normal actions is that careful actions have a higher probability of being successful and have a higher cost. There are a total of 10 actions:
 
-	1. careful|normal MoveF: If successful, moves turtlebot3 forward, otherwise turtlebot3 stays still
+	1. careful|normal MoveF: If successful, moves turtlebot3 forward, otherwise turtlebot3 stays still.
 	
-	2. careful|normal TurnCW: If successful, rotates turtlebot3 in clockwise direction by 90 degree, otherwise, turtlebot3 rotaes in the opposite direction by 90 degrees.
+	2. careful|normal TurnCW: If successful, rotates turtlebot3 in clockwise direction by 90 degree, otherwise, turtlebot3 stays still.
 	
-	3. careful|normal TurnCCW: If successful, rotates turtlebot3 in counter-clockwise direction by 90 degree, otherwise, turtlebot3 rotaes in the opposite direction by 90 degrees.
+	3. careful|normal TurnCCW: If successful, rotates turtlebot3 in counter-clockwise direction by 90 degree, otherwise, turtlebot3 stays still.
 	
 	4. careful|normal pick book_i: If successful, picks the book_i, otherwise no effect.
 	
@@ -325,6 +327,22 @@ Files and Dictionaries
 	The action name above is defined as `pick`. It corresponds to the `execute_pick` function implemented in `action_server.py`. The function takes 1 variable parameter i.e. `book_name` defined in the `params` key. The reward for successful execution of this action is `25` and reward for a failed execution is `-25`. The given config defines a stochastic environment where executing this action `pick` can result in `pick` being executed with probability `0.85` or a no-op action (defined as `noaction`) with probability `0.15`
 
 	To convert this to a deterministic action, we can change the probability of a `pick` action to `1`
+
+=============================
+Tips and Suggestions
+=============================
+
+#. Test your implementations with smaller environments of 1 subject 1 book (-sub 1 -b 1)  as one episode of a 2 subject 2 book environment can take over 2 hours to complete.
+
+#. Train your implementation in headless mode, so that you can reset the world after each episode.
+
+#. Remember to source the setup.bash file in each of the new terminal you start.
+
+	.. code-block:: bash
+
+		source ~/catkin_ws/devel/setup.bash
+
+#. Check the discussion page on Canvas to see if the problem you are facing is already answered. If not, start a new discussion.
 
 
 API

@@ -89,6 +89,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#environment-setting">Environment Setting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#moving-turtlebot">Moving TurtleBot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#files-and-dictionaries">Files and Dictionaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tips-and-suggestions">Tips and Suggestions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#api">API</a><ul>
@@ -372,6 +373,7 @@ optional arguments:
 <p class="last">}</p>
 </div>
 <p>The first element in the trajectory is the initial state. Executing the given action in that state will change the environment into the next state.</p>
+<p>You’ll notice that the penultimate action is giving you the reward of completing the task (500). The final action is given so that you can use the state to calculate reward using R(s,a,s’) formulation. Ignore the reward of the final action.</p>
 </div></blockquote>
 </li>
 <li><p class="first">action_config.json</p>
@@ -410,9 +412,9 @@ optional arguments:
 </div>
 <p>You’ll notice that each action has 2 versions, careful and normal. The only difference between careful and normal actions is that careful actions have a higher probability of being successful and have a higher cost. There are a total of 10 actions:</p>
 <ol class="arabic simple">
-<li>careful|normal MoveF: If successful, moves turtlebot3 forward, otherwise turtlebot3 stays still</li>
-<li>careful|normal TurnCW: If successful, rotates turtlebot3 in clockwise direction by 90 degree, otherwise, turtlebot3 rotaes in the opposite direction by 90 degrees.</li>
-<li>careful|normal TurnCCW: If successful, rotates turtlebot3 in counter-clockwise direction by 90 degree, otherwise, turtlebot3 rotaes in the opposite direction by 90 degrees.</li>
+<li>careful|normal MoveF: If successful, moves turtlebot3 forward, otherwise turtlebot3 stays still.</li>
+<li>careful|normal TurnCW: If successful, rotates turtlebot3 in clockwise direction by 90 degree, otherwise turtlebot3 stays still.</li>
+<li>careful|normal TurnCCW: If successful, rotates turtlebot3 in counter-clockwise direction by 90 degree, otherwise turtlebot3 stays still.</li>
 <li>careful|normal pick book_i: If successful, picks the book_i, otherwise no effect.</li>
 <li>careful|normal place book_i bin_k : If successful, places book_i in bin_k</li>
 </ol>
@@ -488,6 +490,24 @@ optional arguments:
 <p>The action name above is defined as <cite>pick</cite>. It corresponds to the <cite>execute_pick</cite> function implemented in <cite>action_server.py</cite>. The function takes 1 variable parameter i.e. <cite>book_name</cite> defined in the <cite>params</cite> key. The reward for successful execution of this action is <cite>25</cite> and reward for a failed execution is <cite>-25</cite>. The given config defines a stochastic environment where executing this action <cite>pick</cite> can result in <cite>pick</cite> being executed with probability <cite>0.85</cite> or a no-op action (defined as <cite>noaction</cite>) with probability <cite>0.15</cite></p>
 <p>To convert this to a deterministic action, we can change the probability of a <cite>pick</cite> action to <cite>1</cite></p>
 </div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="tips-and-suggestions">
+<h2>Tips and Suggestions<a class="headerlink" href="#tips-and-suggestions" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Test your implementations with smaller environments of 1 subject 1 book (-sub 1 -b 1)  as one episode of a 2 subject 2 book environment can take over 2 hours to complete.</p>
+</li>
+<li><p class="first">Train your implementation in headless mode, so that you can reset the world after each episode.</p>
+</li>
+<li><p class="first">Remember to source the setup.bash file in each of the new terminal you start.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> ~/catkin_ws/devel/setup.bash
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Check the discussion page on Canvas to see if the problem you are facing is already answered. If not, start a new discussion.</p>
 </li>
 </ol>
 </div>
