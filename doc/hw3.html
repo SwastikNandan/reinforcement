@@ -89,6 +89,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#environment-setting">Environment Setting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#moving-turtlebot">Moving TurtleBot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#files-and-dictionaries">Files and Dictionaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#faqs">FAQs …</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tips-and-suggestions">Tips and Suggestions</a></li>
 </ul>
 </li>
@@ -178,21 +179,35 @@
 <ol class="arabic">
 <li><p class="first">[20 points] Compute the Q-values using the 3 sample trajectories provided in trajectories.json files. Export the calculated Q values into a json file.</p>
 <blockquote>
-<div><div class="line-block">
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Use the following equation to perform updates to the Q values.</p>
+<p class="last"><img class="math" src="_images/math/79f3561eeb87cb5048c4c19ac777d7a1473b48db.png" alt="\tilde{Q}(s,a) = (1- \alpha) \tilde{Q}(s,a) + \alpha \; [R(s,a,s') + \gamma \; \underset{a'}{max} \, \tilde{Q}(s',a')]"/></p>
+</div>
+<div class="line-block">
 <div class="line"><br /></div>
 </div>
 </div></blockquote>
 </li>
-<li><p class="first">[15 points] Compute a policy to organize books using Q-learning. Use an <img class="math" src="_images/math/65d19c66c148d5016c6a89d26486bf6d1966ded1.png" alt="\epsilon"/>-greedy policy, which selects at each state, the best action according to current Q values with probability <img class="math" src="_images/math/f1ced56f87d60e4e25a94aa3085254ecf4086494.png" alt="1 - \epsilon"/> and selects a random action with probability <img class="math" src="_images/math/65d19c66c148d5016c6a89d26486bf6d1966ded1.png" alt="\epsilon"/>. For episode number <cite>i</cite>, use <img class="math" src="_images/math/65d19c66c148d5016c6a89d26486bf6d1966ded1.png" alt="\epsilon"/> = max(0.05, 0.7 - 0.05 <cite>i</cite>). Start with Q values as zero for all state-action pairs. Plot a graph for number of episodes (x-axis) v/s cumulative reward (y-axis) after performing Q-learning for those episodes. The environment must have books of 2 subjects with 1 book of each size for each subject. Generate this plot for 500 episodes.</p>
+<li><p class="first">[15 points] Compute a policy to organize books using Q-learning. Use an <img class="math" src="_images/math/65d19c66c148d5016c6a89d26486bf6d1966ded1.png" alt="\epsilon"/>-greedy policy, which selects at each state, the best action according to current Q values with probability <img class="math" src="_images/math/f1ced56f87d60e4e25a94aa3085254ecf4086494.png" alt="1 - \epsilon"/> and selects a random action with probability <img class="math" src="_images/math/65d19c66c148d5016c6a89d26486bf6d1966ded1.png" alt="\epsilon"/>. For episode number <cite>i</cite>, use <img class="math" src="_images/math/65d19c66c148d5016c6a89d26486bf6d1966ded1.png" alt="\epsilon"/> = max(0.05, 0.7 - 0.05 <cite>i</cite>). Start with Q values as zero for all state-action pairs. Plot a graph for number of episodes (x-axis) v/s cumulative reward (y-axis) after performing Q-learning for those episodes. The environment must have books of 1 subject with 1 book of each size for each subject. Generate this plot for 500 episodes.</p>
 <blockquote>
-<div><div class="line-block">
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Use the following equation to perform cumulative reward for task 2 and task 3.</p>
+<p class="last"><img class="math" src="_images/math/28f125596f3765502a96a08615197bc1e46a5d4e.png" alt="R_{cumulative} = R_{cumulative} + \gamma^{step} R(s,a,s')"/></p>
+</div>
+<div class="line-block">
 <div class="line"><br /></div>
 </div>
 </div></blockquote>
 </li>
-<li><p class="first">[15 points] Create a set of pruned action consisting only executable actions for each state, meaning a pick/place should only be performed when the turtlebot is at load location of any of the books/bins. Plot a graph for number of episodes (x-axis) v/s cumulative reward (y-axis) after performing Q-learning for those episodes. The environment must have books of 2 subjects with 1 book of each size for each subject. Generate this plot for as many episodes as possible.</p>
+<li><p class="first">[15 points] Create a set of pruned action consisting only executable actions for each state, meaning a pick/place should only be performed when the turtlebot is at load location of any of the books/bins. Plot a graph for number of episodes (x-axis) v/s cumulative reward (y-axis) after performing Q-learning for those episodes. The environment must have books of 1 subject with 1 book of each size for each subject. Generate this plot for 500 episodes.</p>
 <blockquote>
-<div><div class="line-block">
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Use books.json to get he load locations of books and bins. Use this information to rule out invalid pick/place actions.</p>
+</div>
+<div class="line-block">
 <div class="line"><br /></div>
 </div>
 </div></blockquote>
@@ -413,8 +428,8 @@ optional arguments:
 <p>You’ll notice that each action has 2 versions, careful and normal. The only difference between careful and normal actions is that careful actions have a higher probability of being successful and have a higher cost. There are a total of 10 actions:</p>
 <ol class="arabic simple">
 <li>careful|normal MoveF: If successful, moves turtlebot3 forward, otherwise turtlebot3 stays still.</li>
-<li>careful|normal TurnCW: If successful, rotates turtlebot3 in clockwise direction by 90 degree, otherwise turtlebot3 stays still.</li>
-<li>careful|normal TurnCCW: If successful, rotates turtlebot3 in counter-clockwise direction by 90 degree, otherwise turtlebot3 stays still.</li>
+<li>careful|normal TurnCW: If successful, rotates turtlebot3 in clockwise direction by 90 degree, otherwise, turtlebot3 stays still.</li>
+<li>careful|normal TurnCCW: If successful, rotates turtlebot3 in counter-clockwise direction by 90 degree, otherwise, turtlebot3 stays still.</li>
 <li>careful|normal pick book_i: If successful, picks the book_i, otherwise no effect.</li>
 <li>careful|normal place book_i bin_k : If successful, places book_i in bin_k</li>
 </ol>
@@ -490,6 +505,31 @@ optional arguments:
 <p>The action name above is defined as <cite>pick</cite>. It corresponds to the <cite>execute_pick</cite> function implemented in <cite>action_server.py</cite>. The function takes 1 variable parameter i.e. <cite>book_name</cite> defined in the <cite>params</cite> key. The reward for successful execution of this action is <cite>25</cite> and reward for a failed execution is <cite>-25</cite>. The given config defines a stochastic environment where executing this action <cite>pick</cite> can result in <cite>pick</cite> being executed with probability <cite>0.85</cite> or a no-op action (defined as <cite>noaction</cite>) with probability <cite>0.15</cite></p>
 <p>To convert this to a deterministic action, we can change the probability of a <cite>pick</cite> action to <cite>1</cite></p>
 </div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="faqs">
+<h2>FAQs …<a class="headerlink" href="#faqs" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><dl class="first docutils">
+<dt>For task 1 we get the next state from the json file. As I can see, in given trajectories every state is new, no previous state is being revisited. In that case, won’t <img class="math" src="_images/math/5451fa262ea011c0742186ff62053753cbdf4451.png" alt="\tilde{Q}(s',a')"/> always be 0?</dt>
+<dd>In the given trajectory, yes that is the case however your implementation should correspond to the Q-learning formulation. Your implementation can be tested for different trajectories where a state might get visited multiple times. We gave these trajectories so that you can verify if your Q value updates are correct.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>While choosing the next action based on the <img class="math" src="_images/math/65d19c66c148d5016c6a89d26486bf6d1966ded1.png" alt="\epsilon"/>-greedy, do we also have to model the uncertainty of the action being successful?</dt>
+<dd>No, execute_action() has modeled those scenarios. It will return if the action was successful or not.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>If execute action fails, then do I have to calculate the Q-value of that action in current state and update in the dictionary of that current state?</dt>
+<dd>Yes. We still update the Q values for the current state. For this case of a failed action, the next state is still your current state.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>What is this headless mode?</dt>
+<dd>Gazebo can be run in a headless mode in which the Gazebo UI is not launched. The physics engine and other gazebo processes still run in the background. This reduces the load on system.</dd>
+</dl>
 </li>
 </ol>
 </div>
