@@ -205,7 +205,10 @@
 <blockquote>
 <div><div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Use books.json to get the load locations of books and bins. Use this information to rule out invalid pick/place actions.</p>
+<p>Use books.json to get the load locations of <strong>books and bins</strong>. Use this information to rule out invalid pick/place actions.</p>
+<p>Pruned actions imply that you can perform a pick action only at load locations of books however you can perform pick actions for incorrect books. For example, you can perform the action “careful_pick book_1” at load location of book_2.</p>
+<p>Similarly, you can perform the place action at load locations of the bins however you can perform place actions at incorrect bins. For example, you can perform “careful_place book_1 trolly_1” where trolly_1 may not be the correct bin for placing the book.</p>
+<p class="last">The load locations specify only the x, y coordinates of the load locations. The robot can be in any orientation to perform the pick/place action.</p>
 </div>
 <div class="line-block">
 <div class="line"><br /></div>

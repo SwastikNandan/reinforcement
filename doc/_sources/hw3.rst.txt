@@ -47,7 +47,13 @@ Tasks
 #. [15 points] Create a set of pruned action consisting only executable actions for each state, meaning a pick/place should only be performed when the turtlebot is at load location of any of the books/bins. Plot a graph for number of episodes (x-axis) v/s cumulative reward (y-axis) after performing Q-learning for those episodes. The environment must have books of 1 subject with 1 book of each size for each subject. Generate this plot for 500 episodes.
 
 	.. note::
-		Use books.json to get he load locations of books and bins. Use this information to rule out invalid pick/place actions.
+		Use books.json to get the load locations of **books and bins**. Use this information to rule out invalid pick/place actions.
+
+		Pruned actions imply that you can perform a pick action only at load locations of books however you can perform pick actions for incorrect books. For example, you can perform the action "careful_pick book_1" at load location of book_2.
+		
+		Similarly, you can perform the place action at load locations of the bins however you can perform place actions at incorrect bins. For example, you can perform "careful_place book_1 trolly_1" where trolly_1 may not be the correct bin for placing the book.
+
+		The load locations specify only the x, y coordinates of the load locations. The robot can be in any orientation to perform the pick/place action.
 
 	|
 
